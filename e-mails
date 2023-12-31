@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Envoi d'e-mails</title>
+</head>
+<body>
+  <h1>Envoi d'e-mails</h1>
+  <script src="https://example.com/send-email.js"></script>
+
+  <script>
+    const sendEmail = (sender, recipients, subject, message) => {
+      // Connexion au serveur Mail.ru
+      const server = smtplib.SMTP("smtp.mail.ru", 465)
+      server.ehlo()
+      server.starttls()
+      server.login(sender, "votre_mot_de_passe")
+
+      // Création du message
+      const msg = new smtplib.Message()
+      msg.setFrom(sender)
+      msg.setBcc(recipients.join(", "))
+      msg.setSubject(subject)
+      msg.set_payload(message, subtype="html")
+
+      // Envoi de l'e-mail
+      for (const recipient of recipients) {
+        server.send_message(msg)
+      }
+      server.quit()
+    }
+
+    // Saisie des informations de l'utilisateur
+    const sender = await prompt("Votre adresse e-mail Mail.ru : ")
+    const recipientFile = await prompt("Fichier des contacts destinataires : ")
+
+    // Vérification de l'existence du fichier de contacts destinataires
+    if (!fs.existsSync(recipientFile)) {
+      return console.log("Le fichier des contacts destinataires n'existe pas.")
+    }
+
+    // Lecture du fichier des contacts destinataires
+    const recipients = await fs.readFileSync(recipientFile, "r")
+    recipients = recipients.split("\n").map(x => x.trim())
+
+    // Vérification de la validité des adresses e-mail des destinataires
+    for (const recipient of recipients) {
+      if (!re.match(/^([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+)\.([a-z]{2,6})$/, recipient)) {
+        return console.log(L'adresse e-mail "${recipient}" n'est pas valide.)
+      }
+    }
+
+    // Définition du nombre de destinataires à télécharger
+    const n = 100
+
+    // Téléchargement des destinataires
+    recipients = recipients.slice(0, n)
+
+    // Envoi des e-mails
+    sendEmail(sender, recipients, subject, message)
+  </script>
+</body>
+</html>
